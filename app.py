@@ -5,12 +5,9 @@
 # Streamlit for app creating
 import streamlit as st
 
-# Set Streamlit page configuration e.g. page title
+# Sets the Streamlit page configuration e.g. page title
 # Reference: https://docs.streamlit.io/develop/api-reference/configuration/st.set_page_config
-st.set_page_config(
-    page_title="Fake News Detection App",
-    layout="centered"   
-)
+st.set_page_config(page_title="Fake News Detection App", layout="wide")
 
 # A library for extracting news articles from URLs
 from newspaper import Article
@@ -136,9 +133,7 @@ with st.container():
         """
         <style>
         .block-container {
-            max-width: 1000px;
-            padding: 3rem;
-            margin: 1rem;
+            max-width: 2000px;
         }
         </style>
         """,

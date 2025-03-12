@@ -724,7 +724,7 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
                         "Importance:Q", # Q means numerical value for Altair
                         title="Importance Strength",
                         # Reference: https://altair-viz.github.io/user_guide/generated/core/altair.Scale.html
-                        scale=alt.Scale(domain=[0, max_importance_score]) # Set fixed scale for ease of comparison
+                        scale=alt.Scale(domain=[0, max_importance_score]) # Set fixed scale for easier comparison
                         ),
                 # Sets blue bars for real news prediction, red for fake 
                 color=alt.value("dodgerblue") if main_prediction == 0 else alt.value("red"), 
@@ -733,7 +733,7 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
                         alt.Tooltip("Importance", title="Word Importance")]
             ).properties(
                 title=title, # Set title and chart dimensions
-                height=400,
+                height = 600,
                 width=500
             ).configure_axis( # Reference: https://altair-viz.github.io/altair-viz-v4/user_guide/configuration.html
                 labelFontSize=14,
@@ -784,7 +784,7 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
                         alt.Tooltip("Importance", title="Word Importance")]
             ).properties(
                 title=opposite_title, # Adds title and dimensions
-                height=400,
+                height = 600,
                 width=500
             ).configure_axis(
                 labelFontSize=14, # Sets label and title font szzies
@@ -870,13 +870,13 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
                 alt.value("dodgerblue") if main_prediction == 0 else alt.value("red"), # If same dir as pred class
                 alt.value("red") if main_prediction == 0 else alt.value("dodgerblue") # If NOT same dir as pred class
             ),
-            tooltip=["Feature", # Add tooltips showing the feature, importance score, and raw count/score if user hovers over the bar 
+            tooltip=["Feature", # Adds hoverable tooltips showing the feature, importance score, and raw count/score if user hovers over the bar 
                     alt.Tooltip("Importance", title="Importance Score"), # Importance score
                     alt.Tooltip("Raw Score", title="Raw Feature Value", format=".4f") # Raw scores to 4 decimal places
                 ]  
         ).properties(
             title="Top 10 Extra Features", # Sets title and dimensions
-            height=400,
+            height=600,
             width=500
         )
         
@@ -896,18 +896,18 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
             reverse=True # Gets the top word feats in desc order by importance score
         )
 
-        # Gets the top 10 word features
+        # Extracts the top 10 word features from the sorted dict
         top_10_word_feats = all_top_word_feats[:10]
 
         # Converts the top words dictionary to a pandas DataFrame
         top_word_feats_df = pd.DataFrame(top_10_word_feats, columns=["Feature", "Importance"])
-        # Adds a new column to describe which type of feature this is
+        # Adds a new column to specify which type of feature this is (word or extra engineered feature)
         top_word_feats_df["Feature Type"] = "Word"
 
         # Creates a copy of the extra engineered features DataFrame
         top_extra_feats_df = extra_features_df[["Feature", "Importance"]]
         # Adds a new column to indicate feature type
-        top_extra_feats_df["Feature Type"] = "Engineered"
+        top_extra_feats_df["Feature Type"] = "Semantic / Linguistic"
 
         # Concatenate the two DataFrames storing top features, each feat in a row
         combined_text_and_extra_engineered_features_df = pd.concat([top_word_feats_df, top_extra_feats_df], ignore_index=True)
@@ -927,21 +927,26 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
                             order="descending"
                         ),
                         axis=alt.Axis(
-                            labelFontSize=14
+                            labelFontSize=14,
+                            labelLimit=200
                         )),
             color=alt.condition(
+                # Checks if importance feature score is pos --> if it is means feature is pushing towards the main prediction
                 alt.datum.Importance > 0,
+                # If feature score is pos, and main pred. is real news (0), make bar blue (pushing towards real news), else if pred=fake, make it red
                 alt.value("dodgerblue") if main_prediction == 0 else alt.value("red"),
+                # If feature score is neg, make color opposite to that of the main prediction
                 alt.value("red") if main_prediction == 0 else alt.value("dodgerblue")
             ),
             tooltip=[
+                # Creates a hoverable tooltips to show importance score and kind of feature the bar represents
                 "Feature",
                 alt.Tooltip("Importance", title="Importance Score"),
                 alt.Tooltip("Feature Type", title="Feature Type")
             ]
         ).properties(
             title="Combined Word + Extra Top Features",
-            height = 400,
+            height = 600,
             width = 500
         )
 
@@ -959,7 +964,7 @@ def displayAnalysisResults(explanation_dict, container, news_text, feature_extra
         in the news text pushed the classifier towards a REAL or FAKE prediction,
         not the raw feature score.
         
-        *For more details about these features, including their raw scores and what they mean,
+        *For more details about the extra semantic and linguistic features, including their raw scores and what they mean,
         please click below to view the detailed explanations.*
     """)
     
