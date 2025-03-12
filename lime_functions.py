@@ -344,7 +344,7 @@ def explainPredictionWithLIME(
         extra_features_predict_fn,
         num_features=len(extra_feature_names),
         labels=[text_prediction],
-        num_samples=num_perturbed_samples
+        num_samples=max(num_perturbed_samples, 100) # Caps the extra feature perturbations to 100, as there are only 10 features
     )
 
     # Extracts the extra feature importance scores
