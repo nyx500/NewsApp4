@@ -204,7 +204,7 @@ with st.container():
                                 # Displays the highlighted text, charts and LIME explanations
                                 displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
                 except Exception as e:
-                    print("Could not get news text")
+                    st.error("Could not get news text")
                         
                 # # If it was not possible to extract the news article with newspaper3k, try trafilatura library instead
                 # except Exception as e:
