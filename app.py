@@ -186,23 +186,25 @@ with st.container():
                             downloaded = fetch_url(url)
                             news_text = extract(downloaded)
 
-                         # Displays the scraped original text in an expandable container
-                        with st.expander("View the Original News Text"):
-                            st.text_area("Original News Text", news_text, height=300)
-                            
-                        # Generates the prediction and LIME explanation using the custom func in lime_functions.py
-                        with st.spinner("Analyzing text..."):
-                            explanation_dict = explainPredictionWithLIME(
-                                fasttext_model, # The FastText model
-                                pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
-                                scaler, # The StandardScaler pre-fitted on the all-four training dat
-                                news_text, # The user-inputted news text
-                                feature_extractor, # An instance of the custom feature extractor instance for engineered features
-                                num_features=50, # The number of word features LIME generates with importance scores
-                                num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
-                            )
-                            # Displays the highlighted text, charts and LIME explanations
-                            displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
+                            # Displays the scraped original text in an expandable container
+                            with st.expander("View the Original News Text"):
+                                st.text_area("Original News Text", news_text, height=300)
+                                
+                            # Generates the prediction and LIME explanation using the custom func in lime_functions.py
+                            with st.spinner("Analyzing text..."):
+                                explanation_dict = explainPredictionWithLIME(
+                                    fasttext_model, # The FastText model
+                                    pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
+                                    scaler, # The StandardScaler pre-fitted on the all-four training dat
+                                    news_text, # The user-inputted news text
+                                    feature_extractor, # An instance of the custom feature extractor instance for engineered features
+                                    num_features=50, # The number of word features LIME generates with importance scores
+                                    num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
+                                )
+                                # Displays the highlighted text, charts and LIME explanations
+                                displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
+                except Exception as e:
+                    print("Could not get news text")
                         
                 # # If it was not possible to extract the news article with newspaper3k, try trafilatura library instead
                 # except Exception as e:
