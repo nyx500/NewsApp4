@@ -190,7 +190,7 @@ with st.container():
                             # Reference: "This tool is so great for robustly dealing with content in old and poorly formatted HTML." https://news.ycombinator.com/item?id=37124424
                             downloaded = fetch_url(url)
                             news_text = extract(downloaded)
-
+                            st.write(news_text)
                     # Prints this error if could not extract the news from the URL at all   
                     except Exception as e:
                         st.error(f"Sorry, but there was an error. Could not extract the news article: {e}. Please try copying and pasting instead!")
