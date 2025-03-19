@@ -217,7 +217,7 @@ with st.container():
 
                 # Prints this error if it could not classify or analyze the article
                 except Exception as e:
-                    st.error(f"Sorry, but there was an error. Could not analyze the news article with LIME, please try a different URL.")
+                    st.error(f"Sorry, but there was an error. Could not analyze the news article with LIME, please try a different URL or copy-and-paste text directly in the next tab.")
             
             # Prints this warning if the URL input field was empty
             else:
