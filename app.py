@@ -181,43 +181,65 @@ with st.container():
                         article.parse()
                         # Extracts the article's text content
                         news_text = article.text
-                        
-                # If it was not possible to extract the news article with newspaper3k, try trafilatura library instead
-                except Exception as e:
-                    try:
-                        with st.spinner("Extracting news text from URL..."):
-                            # Use trafilatura instead
-                            # Reference: "This tool is so great for robustly dealing with content in old and poorly formatted HTML." https://news.ycombinator.com/item?id=37124424
+
+                        if news_text == None:
                             downloaded = fetch_url(url)
                             news_text = extract(downloaded)
-                            st.write(f"news text: {news_text}")
-                    # Prints this error if could not extract the news from the URL at all   
-                    except Exception as e:
-                        st.error(f"Sorry, but there was an error. Could not extract the news article: {e}. Please try copying and pasting instead!")
+
+                         # Displays the scraped original text in an expandable container
+                        with st.expander("View the Original News Text"):
+                            st.text_area("Original News Text", news_text, height=300)
+                            
+                        # Generates the prediction and LIME explanation using the custom func in lime_functions.py
+                        with st.spinner("Analyzing text..."):
+                            explanation_dict = explainPredictionWithLIME(
+                                fasttext_model, # The FastText model
+                                pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
+                                scaler, # The StandardScaler pre-fitted on the all-four training dat
+                                news_text, # The user-inputted news text
+                                feature_extractor, # An instance of the custom feature extractor instance for engineered features
+                                num_features=50, # The number of word features LIME generates with importance scores
+                                num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
+                            )
+                            # Displays the highlighted text, charts and LIME explanations
+                            displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
+                        
+                # # If it was not possible to extract the news article with newspaper3k, try trafilatura library instead
+                # except Exception as e:
+                #     try:
+                #         with st.spinner("Extracting news text from URL..."):
+                #             # Use trafilatura instead
+                #             # Reference: "This tool is so great for robustly dealing with content in old and poorly formatted HTML." https://news.ycombinator.com/item?id=37124424
+                #             downloaded = fetch_url(url)
+                #             news_text = extract(downloaded)
+                #             st.write(f"news text: {news_text}")
+                #     # Prints this error if could not extract the news from the URL at all   
+                #     except Exception as e:
+                #         st.error(f"Sorry, but there was an error. Could not extract the news article: {e}. Please try copying and pasting instead!")
 
                 # Now tries to calculate the LIME scores and catches the Exception if there is an error
-                try:                            
-                    # Displays the scraped original text in an expandable container
-                    with st.expander("View the Original News Text"):
-                        st.text_area("Original News Text", news_text, height=300)
+                # try:                            
+                #     # Displays the scraped original text in an expandable container
+                #     with st.expander("View the Original News Text"):
+                #         st.text_area("Original News Text", news_text, height=300)
                         
-                    # Generates the prediction and LIME explanation using the custom func in lime_functions.py
-                    with st.spinner("Analyzing text..."):
-                        explanation_dict = explainPredictionWithLIME(
-                            fasttext_model, # The FastText model
-                            pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
-                            scaler, # The StandardScaler pre-fitted on the all-four training dat
-                            news_text, # The user-inputted news text
-                            feature_extractor, # An instance of the custom feature extractor instance for engineered features
-                            num_features=50, # The number of word features LIME generates with importance scores
-                            num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
-                        )
-                        # Displays the highlighted text, charts and LIME explanations
-                        displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
+                #     # Generates the prediction and LIME explanation using the custom func in lime_functions.py
+                #     with st.spinner("Analyzing text..."):
+                #         explanation_dict = explainPredictionWithLIME(
+                #             fasttext_model, # The FastText model
+                #             pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
+                #             scaler, # The StandardScaler pre-fitted on the all-four training dat
+                #             news_text, # The user-inputted news text
+                #             feature_extractor, # An instance of the custom feature extractor instance for engineered features
+                #             num_features=50, # The number of word features LIME generates with importance scores
+                #             num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
+                #         )
+                #         # Displays the highlighted text, charts and LIME explanations
+                #         displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
 
-                # Prints this error if it could not classify or analyze the article
-                except Exception as e:
-                    st.error(f"Sorry, but there was an error. Could not extract and analyze this news URL: please try a different URL or copy-and-paste text directly in the next tab.")
+                # # Prints this error if it could not classify or analyze the article
+                # except Exception as e:
+                #     st.error(f"Sorry, but there was an error. Could not extract and analyze this news URL: please try a different URL or copy-and-paste text directly in the next tab.")
             
             # Prints this warning if the URL input field was empty
             else:
