@@ -184,7 +184,7 @@ with st.container():
 
                         st.warning(f"NEWS TEXT: {news_text}")
 
-                        if news_text == None:
+                        if news_text == None or len(news_text) == 0:
                             downloaded = fetch_url(url)
                             news_text = extract(downloaded)
 
@@ -209,7 +209,7 @@ with st.container():
                             displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
 
                 except Exception as e:
-                    st.error("Could not get news text")
+                    st.error("Could not extract and analyze the news text. Please try to copy and paste in the text directly in the second tab.")
                         
                 # # If it was not possible to extract the news article with newspaper3k, try trafilatura library instead
                 # except Exception as e:
