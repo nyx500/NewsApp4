@@ -193,12 +193,16 @@ with st.container():
                         news_text = article.text
 
                         # Checks if text is in English
-                        if detectIfTextIsEnglish(news_text):
+                        is_english = detectIfTextIsEnglish(news_text)
+
+                        if is_english == True:
                             # Displays the original news text and the LIME-generated visualizations and explanations
                             analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
-                        else:
+                        elif is_english == False:
                             # Prints an error for users if text is not in English
                             st.error("This text has been detected as non-English. As this model was trained on English news only, please enter an English language text.")
+                        else: # is_english returns None due to LangDetect Error
+                            st.error("Could not extract the news text from the URL, please enter it directly by copying and pasting it in the second tab.")
 
                 except Exception as e:
                     try:
@@ -206,12 +210,16 @@ with st.container():
                         news_text = scrapeWithSoup(url)
 
                         # Checks if text is in English
-                        if detectIfTextIsEnglish(news_text):
+                        is_english = detectIfTextIsEnglish(news_text)
+
+                        if is_english == True:
                             # Displays the original news text and the LIME-generated visualizations and explanations
                             analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
-                        else:
+                        elif is_english == False:
                             # Prints an error for users if text is not in English
                             st.error("This text has been detected as non-English. As this model was trained on English news only, please enter an English language text.")
+                        else: # is_english returns None due to LangDetect Error
+                            st.error("Could not extract the news text from the URL, please enter it directly by copying and pasting it in the second tab.")
                         
                     except Exception as e:
                         st.error("Could not extract and analyze the news text. Please try to copy and paste in the text directly in the second tab.")
