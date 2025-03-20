@@ -206,7 +206,7 @@ with st.container():
             else:
                 st.warning("Warning: Please enter some valid news text for classification!")
 
-    # Second tab: News input copied and pasted or written in directly by the user as text
+    # Second tab: News input copied and pasted or written in directly by the user as text. If URL extractor does not work, user can still use the app and this as a backup
     with tabs[1]:
 
         # Displays title
