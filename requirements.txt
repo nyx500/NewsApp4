@@ -1,6 +1,7 @@
 streamlit
 joblib==1.4.2
 newspaper3k==0.2.8
+requests
 gdown
 fasttext
 altair
