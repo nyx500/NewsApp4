@@ -19,9 +19,7 @@ import fasttext
 # Imports the custom-made feature extractor class
 from feature_extractor import BasicFeatureExtractor
 # Imports BeautifulSoup4 news text extractor backup func
-from backup_scraping_utils import scrapeWithSoup
-# Imports the custom explainability functions from lime_functions.py for generating LIME explanations
-from lime_functions import explainPredictionWithLIME, displayAnalysisResults
+from app_utils import scrapeWithSoup, analyzeNewsText
 
 # Maps the DataFrame extra feature names to explanations about their tendencies and patterns in training data
 FEATURE_EXPLANATIONS = {
@@ -119,41 +117,6 @@ with st.spinner("Loading pre-fitted feature scaler..."):
 with st.spinner("Loading fastText embeddings model..."):
     fasttext_model = load_fasttext_model()
 
-
-def analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50):
-    """"
-    Reusable function for analyzing the news text (pasted or extracted from URL) with LIME and showing the
-    visualizations, text, and highlighted text in the Streamlit app.
-
-        Input Parameters:
-            news_text (str): the news text to analyze
-            fasttext_model (fasttext.FastText._FastText): the pre-trained FastText model
-            pipeline (sklearn.pipeline.Pipeline): the pre-trained classifier model with Passive-Aggressive Classifier and CalibratedClassifierCV for outputting probabilities
-            scaler (sklearn.preprocessing.StandardScaler): the pre-fitted StandardScaler
-            feature_extractor (instance of custom made BasicFeatureExtractor): an instance of the class for extracting extra semantic and linguistic features
-            num_perturbed_samples (int): user-selected number of perturbed samples for LIME to generate
-            FEATURE_EXPLANATIONS (dict): maps extra feature column names to user-focused explanations
-            num_features (int): number of word features for LIME Text Explainer to generate importance scores for, default = 50
-    """
-
-    # Displays the scraped original text in an expandable container
-    with st.expander("View the Original News Text"):
-        st.text_area("Original News Text", news_text, height=300)   
-
-    # Generates the prediction and LIME explanation using the custom func in lime_functions.py
-    with st.spinner("Analyzing text..."):
-        explanation_dict = explainPredictionWithLIME(
-            fasttext_model, # The FastText model
-            pipeline, # The Passive-Aggressive Classifer model wrapped in CalibratedClassifierCV
-            scaler, # The StandardScaler pre-fitted on the all-four training dat
-            news_text, # The user-inputted news text
-            feature_extractor, # An instance of the custom feature extractor instance for engineered features
-            num_features=num_features, # The number of word features LIME generates with importance scores
-            num_perturbed_samples=num_perturbed_samples # User-inputted num of perturbed samples for LIME to generate
-        )
-
-        # Displays the highlighted text, charts and LIME explanations
-        displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
 
 
 # Displays the whole app's title
