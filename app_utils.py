@@ -85,13 +85,12 @@ def detectIfTextIsEnglish(news_text):
             news_text (str): the news text to analyze
     """
     # Tries to detect whether text is in English
-    try:
-        language = detect(news_text)
-        # Non-English text: return False
-        if language != "en":
-            return False
-        else:
-            return True # Text is in English
-    # Not able to detect, also returns False
-    except Exception as e:
+    language = detect(news_text)
+    # Non-English text: return False
+    if language != "en":
         return False
+    else:
+        return True # Text is in English
+    # # Not able to detect, also returns False
+    # except Exception as e:
+    #     return False
