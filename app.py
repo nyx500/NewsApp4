@@ -6,7 +6,8 @@ import streamlit as st
 # Sets the Streamlit page configuration e.g. page title
 # Reference: https://docs.streamlit.io/develop/api-reference/configuration/st.set_page_config
 st.set_page_config(page_title="Fake News Detection App", layout="wide")
-# Imports the library for extracting news articles from URLs
+# Imports the libraries for extracting news articles from URLs
+from newspaper import Config
 from newspaper import Article
 # Imports library for loading in the graphs and charts showing global fake vs real news patterns
 import matplotlib.pyplot as plt
@@ -174,7 +175,12 @@ with st.container():
 
                         # Uses the newspaper3k to scrape the news article from the web
                         # Reference: https://newspaper.readthedocs.io/en/latest/
-                        article = Article(url)
+                        # Reference to code: https://stackoverflow.com/questions/68430858/newspaper3k-user-agents-and-scraping
+                        # https://www.zenrows.com/blog/curl-user-agent#set-custom-user-agent
+                        user_agent = "Mozilla/5.0 (Linux; Android 10; SM-G996U Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36"
+                        config = Config()
+                        config.browser_user_agent = user_agent
+                        article = Article(url, config=config)
                         article.download()
                         article.parse()
 
@@ -206,7 +212,8 @@ with st.container():
             else:
                 st.warning("Warning: Please enter some valid news text for classification!")
 
-    # Second tab: News input copied and pasted or written in directly by the user as text. If URL extractor does not work, user can still use the app and this as a backup
+    # Second tab: News input copied and pasted or written in directly by the user as text. If URL extractor does not work due to issues
+    # with scraping some articles, the user can still use the app and this as a backup
     with tabs[1]:
 
         # Displays title
