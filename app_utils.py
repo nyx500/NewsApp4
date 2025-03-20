@@ -1,3 +1,5 @@
+# Util functions for scraping urls and analyzing news texts with LIME for reusable, modular functionality in the app
+
 # Quick start BS4: https://www.crummy.com/software/BeautifulSoup/bs4/doc/#
 # Reference: https://brightdata.com/faqs/beautifulsoup/extract-text-from-html
 import requests

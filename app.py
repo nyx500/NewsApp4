@@ -18,7 +18,7 @@ import gdown
 import fasttext
 # Imports the custom-made feature extractor class
 from feature_extractor import BasicFeatureExtractor
-# Imports BeautifulSoup4 news text extractor backup func
+# Imports BeautifulSoup4 news text extractor backup func and LIME text and features analyzing function
 from app_utils import scrapeWithSoup, analyzeNewsText
 
 # Maps the DataFrame extra feature names to explanations about their tendencies and patterns in training data
