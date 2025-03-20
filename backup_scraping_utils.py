@@ -16,7 +16,8 @@ def scrapeWithSoup(url):
     soup = BeautifulSoup(html_content,  "html.parser")
 
     # Extracts all the text from the HTML
-    text = soup.get_text()
+    # https://stackoverflow.com/questions/64691432/scrape-news-article-from-scraped-link-from-news-website-beautifulsoup-python
+    text = soup.find_all("div", {"class", "most__list clearfix"})
 
     return text
 
