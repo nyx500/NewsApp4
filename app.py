@@ -18,8 +18,8 @@ import gdown
 import fasttext
 # Imports the custom-made feature extractor class
 from feature_extractor import BasicFeatureExtractor
-# Imports BeautifulSoup4 news text extractor backup func and LIME text and features analyzing function
-from app_utils import scrapeWithSoup, analyzeNewsText
+# Imports BeautifulSoup4 news text extractor backup function, as well as the LIME text and features analyzing function
+from app_utils import scrapeWithSoup, analyzeNewsText, detectIfTextIsEnglish
 
 # Maps the DataFrame extra feature names to explanations about their tendencies and patterns in training data
 FEATURE_EXPLANATIONS = {
@@ -191,17 +191,27 @@ with st.container():
 
                         # Extracts the article's text content using newspaper3k
                         news_text = article.text
-                        
-                        # Displays the original news text and the LIME-generated visualizations and explanations
-                        analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+
+                        # Checks if text is in English
+                        if detectIfTextIsEnglish(news_text):
+                            # Displays the original news text and the LIME-generated visualizations and explanations
+                            analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+                        else:
+                            # Prints an error for users if text is not in English
+                            st.error("This text has been detected as non-English. As this model was trained on English news only, please enter an English language text.")
 
                 except Exception as e:
                     try:
                         # Tries to extract the URL with BeautifulSoup4, using a custom function defined in backup_scraping_utils.py, if newspaper3k does not work
                         news_text = scrapeWithSoup(url)
 
-                        # Displays the original news text and the LIME-generated visualizations and explanations
-                        analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+                        # Checks if text is in English
+                        if detectIfTextIsEnglish(news_text):
+                            # Displays the original news text and the LIME-generated visualizations and explanations
+                            analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+                        else:
+                            # Prints an error for users if text is not in English
+                            st.error("This text has been detected as non-English. As this model was trained on English news only, please enter an English language text.")
                         
                     except Exception as e:
                         st.error("Could not extract and analyze the news text. Please try to copy and paste in the text directly in the second tab.")
@@ -245,8 +255,13 @@ with st.container():
                     # Shows progress to user with spinner
                     with st.spinner(f"Analyzing text with {num_perturbed_samples} perturbed samples..."):
 
-                        # Displays the original news text and the LIME-generated visualizations and explanations
-                        analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+                        # Checks if text is in English
+                        if detectIfTextIsEnglish(news_text):
+                            # Displays the original news text and the LIME-generated visualizations and explanations
+                            analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extractor, num_perturbed_samples, FEATURE_EXPLANATIONS, num_features=50)
+                        else:
+                            # Prints an error for users if text is not in English
+                            st.error("This text has been detected as non-English. As this model was trained on English news only, please enter an English language text.")
 
                 # If it could not process the text, informs the user with an error message         
                 except Exception as e:

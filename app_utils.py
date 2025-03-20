@@ -7,6 +7,7 @@ import streamlit as st
 from bs4 import BeautifulSoup
 # Imports the custom explainability functions from lime_functions.py for generating LIME explanations
 from lime_functions import explainPredictionWithLIME, displayAnalysisResults
+from langdetect import detect, LangDetectException
 
 def scrapeWithSoup(url):
     """"
@@ -74,3 +75,23 @@ def analyzeNewsText(news_text, fasttext_model, pipeline, scaler, feature_extract
 
         # Displays the highlighted text, charts and LIME explanations
         displayAnalysisResults(explanation_dict, st, news_text, feature_extractor, FEATURE_EXPLANATIONS)
+
+
+def detectIfTextIsEnglish(news_text):
+    """"
+    Returns False if text not in English, otherwise True.
+
+        Input Parameters:
+            news_text (str): the news text to analyze
+    """
+    # Tries to detect whether text is in English
+    try:
+        language = detect(news_text)
+        # Non-English text: return False
+        if language != "en":
+            return False
+        else:
+            return True # Text is in English
+    # Not able to detect, also returns False
+    except Exception as e:
+        return False

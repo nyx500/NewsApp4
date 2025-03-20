@@ -10,6 +10,7 @@ tqdm
 lxml_html_clean
 nrclex
 pandas
+langdetect
 textstat
 seaborn
 lime
