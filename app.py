@@ -181,9 +181,7 @@ with st.container():
                         user_agent = "Mozilla/5.0 (Linux; Android 10; SM-G996U Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36"
                         config = Config()
                         config.browser_user_agent = user_agent
-                        config.request_timeout = 15
-                        config.memoize_articles = False
-                        config.language = "en"
+                        config.request_timeout = 10
                         config.fetch_images = False # From newspaper3k docs: "set this to false if you don’t care about getting images"
                         article = Article(url, config=config)
                         article.download()
