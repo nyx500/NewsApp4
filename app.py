@@ -176,10 +176,15 @@ with st.container():
                         # Uses the newspaper3k to scrape the news article from the web
                         # Reference: https://newspaper.readthedocs.io/en/latest/
                         # Reference to code: https://stackoverflow.com/questions/68430858/newspaper3k-user-agents-and-scraping
+                        # https://stackoverflow.com/questions/65110807/web-scraping-with-python-and-newspaper3k-lib-does-not-return-data
                         # https://www.zenrows.com/blog/curl-user-agent#set-custom-user-agent
                         user_agent = "Mozilla/5.0 (Linux; Android 10; SM-G996U Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36"
                         config = Config()
                         config.browser_user_agent = user_agent
+                        config.request_timeout = 15
+                        config.memoize_articles = False
+                        config.language = "en"
+                        config.fetch_images = False # From newspaper3k docs: "set this to false if you don’t care about getting images"
                         article = Article(url, config=config)
                         article.download()
                         article.parse()
